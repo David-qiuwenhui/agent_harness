@@ -37,3 +37,26 @@ coverage/
 # Temp
 *.tmp
 *.bak
+
+# Dify source code and runtime (not our code)
+dify/dify-main/
+dify/volumes/
+dify/nginx/
+dify/ssrf_proxy/
+dify/certbot/
+dify/couchbase-server/
+dify/elasticsearch/
+dify/iris/
+dify/pgvector/
+dify/tidb/
+dify/startupscripts/
+dify/envs/
+dify/docker-compose.yaml
+dify/docker-compose-template.yaml
+dify/docker-compose.middleware.yaml
+dify/docker-compose.pytest.ports.yaml
+dify/docker-compose.png
+dify/generate_docker_compose
+dify/dify-env-sync.py
+dify/dify-env-sync.sh
+dify/README.md
