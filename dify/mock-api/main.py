@@ -1,18 +1,21 @@
 """
 电子流系统 Mock API
 用于 Dify Custom Tool 对接测试
+
+错误处理约定：始终返回 HTTP 200 + 业务 code，因为 Dify Tool Calling 无法处理 HTTP 4xx/5xx
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Path
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 app = FastAPI(title="电子流 Mock API", version="1.0.0")
 
+# DEVELOPMENT ONLY: open CORS for Dify Tool Calling from Docker
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["*"],
+    allow_methods=["GET"],
     allow_headers=["*"],
 )
 
@@ -55,7 +58,7 @@ def health_check():
 
 
 @app.get("/api/workflow/{workflow_id}")
-def get_workflow(workflow_id: str):
+def get_workflow(workflow_id: str = Path(..., pattern=r"^WF-\d{4}-\d{4}$")):
     if workflow_id in MOCK_WORKFLOWS:
         return {"code": 0, "data": MOCK_WORKFLOWS[workflow_id], "message": "success"}
     return {"code": 404, "data": None, "message": f"电子流 {workflow_id} 不存在，请检查编号是否正确"}
@@ -64,4 +67,5 @@ def get_workflow(workflow_id: str):
 if __name__ == "__main__":
     print("电子流 Mock API 启动中...")
     print("API 文档: http://localhost:8001/docs")
+    # 0.0.0.0 required for Docker access via host.docker.internal
     uvicorn.run(app, host="0.0.0.0", port=8001)
